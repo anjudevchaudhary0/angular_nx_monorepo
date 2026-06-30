@@ -1,9 +1,25 @@
 {
-  "name": "@org/source",
+  "name": "angular-nx-monorepo",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
   "private": true,
+  "scripts": {
+    "prepare": "husky",
+    "lint": "nx run-many -t lint",
+    "lint:fix": "nx run-many -t lint -- --fix",
+    "lint:affected": "nx affected -t lint",
+    "test": "nx run-many -t test",
+    "build": "nx run-many -t build",
+    "typecheck": "nx run-many -t typecheck"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,mts,js,jsx}": [
+      "eslint --fix"
+    ],
+    "*.{html,scss,css,json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  },
   "dependencies": {
     "@angular-devkit/build-angular": "21.2.7",
     "@angular/common": "21.2.9",
@@ -58,9 +74,11 @@
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^10.0.0",
     "eslint-plugin-playwright": "^1.6.2",
+    "husky": "^9.1.7",
     "jiti": "2.4.2",
     "jsdom": "~22.1.0",
     "jsonc-eslint-parser": "^2.1.0",
+    "lint-staged": "^17.0.8",
     "nx": "23.0.1",
     "prettier": "^3.8.1",
     "supertest": "^7.1.4",
