@@ -1,6 +1,3 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 # Uncomment to run affected tests before pushing:
 # FILES=$(git diff --name-only HEAD...origin/main | tr '\n' ',')
 # pnpm exec nx affected -t test --files="$FILES" --coverage
