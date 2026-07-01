@@ -1,6 +1,6 @@
 ---
 description: General Code Quality — DRY, SOLID, naming conventions, quotes, and consistency
-alwaysApply: true
+applyTo: '**'
 ---
 
 ## Naming Conventions

@@ -1,6 +1,6 @@
 ---
 description: TypeScript Best Practices — enforces strict typing and modern TypeScript idioms
-alwaysApply: true
+applyTo: '**'
 ---
 
 ## Strict Mode
