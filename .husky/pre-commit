@@ -1,5 +1,110 @@
-# Resolve node from nvm if not on PATH (common in GUI git clients)
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+#!/bin/sh
+set -e
 
-pnpm exec lint-staged
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+# Git hooks can run with a restricted PATH (for example from GUI clients).
+# Resolve pnpm from common install locations, then fall back to corepack.
+PNPM_BIN=""
+NODE_BIN=""
+
+if command -v pnpm >/dev/null 2>&1; then
+  PNPM_BIN="$(command -v pnpm)"
+else
+  # Add common Windows install locations when running under Git Bash.
+  WIN_LOCALAPPDATA=""
+  WIN_APPDATA=""
+
+  if [ -n "$LOCALAPPDATA" ]; then
+    WIN_LOCALAPPDATA="$(printf '%s' "$LOCALAPPDATA" | sed 's#\\#/#g')"
+  elif [ -n "$USERPROFILE" ]; then
+    WIN_LOCALAPPDATA="$(printf '%s' "$USERPROFILE/AppData/Local" | sed 's#\\#/#g')"
+  fi
+
+  if [ -n "$APPDATA" ]; then
+    WIN_APPDATA="$(printf '%s' "$APPDATA" | sed 's#\\#/#g')"
+  elif [ -n "$USERPROFILE" ]; then
+    WIN_APPDATA="$(printf '%s' "$USERPROFILE/AppData/Roaming" | sed 's#\\#/#g')"
+  fi
+
+  for candidate in \
+    "$HOME/.nvm/versions/node/*/bin/pnpm" \
+    "$HOME/.local/share/pnpm/pnpm" \
+    "$HOME/.volta/bin/pnpm" \
+    "/opt/homebrew/bin/pnpm" \
+    "/usr/local/bin/pnpm" \
+    "/usr/bin/pnpm" \
+    "$WIN_LOCALAPPDATA/pnpm/pnpm" \
+    "$WIN_APPDATA/npm/pnpm.cmd" \
+    "/c/Program Files/nodejs/pnpm.cmd" \
+    "/c/Program Files (x86)/nodejs/pnpm.cmd"
+  do
+    # Expand glob candidates (for nvm paths), but keep literal paths quoted so
+    # entries containing spaces are not split by the shell.
+    if [ "$candidate" != "${candidate#*\*}" ]; then
+      for resolved in $candidate; do
+        if [ -x "$resolved" ]; then
+          PNPM_BIN="$resolved"
+          break 2
+        fi
+      done
+    else
+      if [ -x "$candidate" ]; then
+        PNPM_BIN="$candidate"
+        break
+      fi
+    fi
+  done
+fi
+
+if command -v node >/dev/null 2>&1; then
+  NODE_BIN="$(dirname "$(command -v node)")"
+elif [ -n "$PNPM_BIN" ]; then
+  PNPM_DIR="$(dirname "$PNPM_BIN")"
+  for candidate in \
+    "$PNPM_DIR/node" \
+    "$PNPM_DIR/../node" \
+    "$HOME/.nvm/versions/node/*/bin/node" \
+    "$HOME/.volta/bin/node" \
+    "/opt/homebrew/bin/node" \
+    "/usr/local/bin/node" \
+    "/usr/bin/node" \
+    "$WIN_LOCALAPPDATA/pnpm/node" \
+    "/c/Program Files/nodejs/node.exe" \
+    "/c/Program Files (x86)/nodejs/node.exe"
+  do
+    # Expand glob candidates (for nvm paths), but keep literal paths quoted so
+    # entries containing spaces are not split by the shell.
+    if [ "$candidate" != "${candidate#*\*}" ]; then
+      for resolved in $candidate; do
+        if [ -x "$resolved" ]; then
+          NODE_BIN="$(dirname "$resolved")"
+          break 2
+        fi
+      done
+    else
+      if [ -x "$candidate" ]; then
+        NODE_BIN="$(dirname "$candidate")"
+        break
+      fi
+    fi
+  done
+fi
+
+if [ -n "$NODE_BIN" ]; then
+  export PATH="$NODE_BIN:$PATH"
+fi
+
+if [ -n "$PNPM_BIN" ]; then
+  "$PNPM_BIN" exec lint-staged
+elif command -v corepack >/dev/null 2>&1; then
+  corepack pnpm exec lint-staged
+elif [ -x "/c/Program Files/nodejs/corepack.cmd" ]; then
+  "/c/Program Files/nodejs/corepack.cmd" pnpm exec lint-staged
+elif [ -x "/c/Program Files (x86)/nodejs/corepack.cmd" ]; then
+  "/c/Program Files (x86)/nodejs/corepack.cmd" pnpm exec lint-staged
+else
+  echo "husky - pnpm not found. Install pnpm or ensure it is available in PATH for Git hooks."
+  exit 127
+fi
