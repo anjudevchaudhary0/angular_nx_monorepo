@@ -1,22 +1,17 @@
-import {Component} from "@angular/core"
-import {ChangeDetectionStrategy} from "@angular/core"
-
-// Deliberately bad formatting:
-// - double quotes instead of single quotes
-// - missing spaces around braces
-// - inconsistent indentation
+import { Component } from '@angular/core';
+import { ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   standalone: true,
-  selector: "app-demo",
+  selector: 'app-demo',
   template: `<h1>Hello</h1>`,
-    changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DemoHusky {
-  protected   title = "Husky Demo"
-  protected count=0
+  protected title = 'Husky Demo';
+  protected count = 0;
 
-  increment(){
-    this.count++
+  increment() {
+    this.count++;
   }
 }
