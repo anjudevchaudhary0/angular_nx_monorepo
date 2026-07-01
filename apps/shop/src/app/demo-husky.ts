@@ -12,6 +12,6 @@ export class DemoHusky {
   increment() {
     const a = 1;
     this.count++;
-    console.log('Incremented count to:', a);
+    console.log('console log ---> :', a);
   }
 }
