@@ -1,4 +1,4 @@
-import { Route } from '@angular/router';
+import { type Route } from '@angular/router';
 
 export const appRoutes: Route[] = [
   {
@@ -9,13 +9,13 @@ export const appRoutes: Route[] = [
   {
     path: 'products',
     loadChildren: () =>
-      import('@org/shop/feature-products').then(m => m.featureProductsRoutes),
+      import('@org/shop/feature-products').then((m) => m.featureProductsRoutes),
   },
   {
     path: 'products',
     loadChildren: () =>
       import('@org/shop/feature-product-detail').then(
-        m => m.featureProductDetailRoutes
+        (m) => m.featureProductDetailRoutes,
       ),
   },
   {

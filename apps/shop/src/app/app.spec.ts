@@ -1,4 +1,4 @@
-import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { App } from './app';
 import { appRoutes } from './app.routes';
 import { provideRouter } from '@angular/router';
@@ -33,7 +33,7 @@ describe('App', () => {
     expect(navLinks.length).toBeGreaterThan(0);
     expect(navLinks[0].nativeElement.textContent).toContain('Products');
     expect(navLinks[0].nativeElement.getAttribute('routerLink')).toBe(
-      '/products'
+      '/products',
     );
   });
 
@@ -42,7 +42,7 @@ describe('App', () => {
     expect(footer).toBeTruthy();
     expect(footer?.textContent).toContain('© 2025 Nx Shop Demo');
     expect(footer?.textContent).toContain(
-      'Frontend (Angular) + Backend (Express) + Shared Libraries'
+      'Frontend (Angular) + Backend (Express) + Shared Libraries',
     );
   });
 
