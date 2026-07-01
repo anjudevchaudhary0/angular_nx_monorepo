@@ -1,7 +1,12 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, map, catchError, of } from 'rxjs';
-import { Product, ApiResponse, PaginatedResponse, ProductFilter } from '@org/models';
+import { type Observable, map, catchError, of } from 'rxjs';
+import {
+  type Product,
+  type ApiResponse,
+  type PaginatedResponse,
+  type ProductFilter,
+} from '@org/models';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +25,7 @@ export class ProductsService {
   getProducts(
     filter?: ProductFilter,
     page = 1,
-    pageSize = 12
+    pageSize = 12,
   ): Observable<PaginatedResponse<Product>> {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
@@ -62,7 +67,7 @@ export class ProductsService {
         catchError((error) => {
           this.loadingSignal.set(false);
           this.errorSignal.set(
-            error.message || 'An error occurred while loading products'
+            error.message || 'An error occurred while loading products',
           );
           console.error('Error loading products:', error);
           return of({
@@ -72,7 +77,7 @@ export class ProductsService {
             pageSize: 12,
             totalPages: 0,
           });
-        })
+        }),
       );
   }
 
@@ -93,11 +98,11 @@ export class ProductsService {
         catchError((error) => {
           this.loadingSignal.set(false);
           this.errorSignal.set(
-            error.message || 'An error occurred while loading the product'
+            error.message || 'An error occurred while loading the product',
           );
           console.error('Error loading product:', error);
           return of(null);
-        })
+        }),
       );
   }
 
@@ -114,14 +119,14 @@ export class ProductsService {
         catchError((error) => {
           console.error('Error loading categories:', error);
           return of([]);
-        })
+        }),
       );
   }
 
   getPriceRange(): Observable<{ min: number; max: number }> {
     return this.http
       .get<ApiResponse<{ min: number; max: number }>>(
-        `${this.apiUrl}/products-metadata/price-range`
+        `${this.apiUrl}/products-metadata/price-range`,
       )
       .pipe(
         map((response) => {
@@ -133,7 +138,7 @@ export class ProductsService {
         catchError((error) => {
           console.error('Error loading price range:', error);
           return of({ min: 0, max: 1000 });
-        })
+        }),
       );
   }
 }

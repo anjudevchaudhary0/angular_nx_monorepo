@@ -1,8 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
+import {
+  provideHttpClientTesting,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 import { ProductsService } from './products.service';
-import { Product, ApiResponse, PaginatedResponse, ProductFilter } from '@org/models';
+import {
+  type Product,
+  type ApiResponse,
+  type PaginatedResponse,
+  type ProductFilter,
+} from '@org/models';
 
 describe('ProductsService', () => {
   let service: ProductsService;
@@ -14,7 +22,7 @@ describe('ProductsService', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        ProductsService
+        ProductsService,
       ],
     });
     service = TestBed.inject(ProductsService);
@@ -92,7 +100,7 @@ describe('ProductsService', () => {
       });
 
       const req = httpMock.expectOne(
-        `${apiUrl}/products?page=2&pageSize=20&category=Electronics&minPrice=50&maxPrice=150&inStock=true&searchTerm=test`
+        `${apiUrl}/products?page=2&pageSize=20&category=Electronics&minPrice=50&maxPrice=150&inStock=true&searchTerm=test`,
       );
       expect(req.request.method).toBe('GET');
       req.flush(mockProductsResponse);
@@ -102,11 +110,13 @@ describe('ProductsService', () => {
       const errorResponse: ApiResponse<PaginatedResponse<Product>> = {
         success: false,
         error: 'Server error',
-        data: undefined as unknown
+        data: undefined as unknown,
       };
 
       // Silence console.error for this test
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      const consoleErrorSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
 
       service.getProducts().subscribe((response) => {
         expect(response.items).toEqual([]);
@@ -122,7 +132,9 @@ describe('ProductsService', () => {
 
     it('should handle network error', () => {
       // Silence console.error for this test
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      const consoleErrorSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
 
       service.getProducts().subscribe((response) => {
         expect(response.items).toEqual([]);
@@ -169,7 +181,9 @@ describe('ProductsService', () => {
 
     it('should return null on error', () => {
       // Silence console.error for this test
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      const consoleErrorSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
 
       service.getProductById('1').subscribe((product) => {
         expect(product).toBeNull();
@@ -202,7 +216,9 @@ describe('ProductsService', () => {
 
     it('should return empty array on error', () => {
       // Silence console.error for this test
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      const consoleErrorSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
 
       service.getCategories().subscribe((categories) => {
         expect(categories).toEqual([]);
@@ -234,7 +250,9 @@ describe('ProductsService', () => {
 
     it('should return default range on error', () => {
       // Silence console.error for this test
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      const consoleErrorSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
 
       service.getPriceRange().subscribe((range) => {
         expect(range).toEqual({ min: 0, max: 1000 });
@@ -255,14 +273,19 @@ describe('ProductsService', () => {
       expect(service.loading()).toBeTruthy();
 
       const req = httpMock.expectOne(`${apiUrl}/products?page=1&pageSize=12`);
-      req.flush({ success: true, data: { items: [], total: 0, page: 1, pageSize: 12, totalPages: 0 } });
+      req.flush({
+        success: true,
+        data: { items: [], total: 0, page: 1, pageSize: 12, totalPages: 0 },
+      });
 
       expect(service.loading()).toBeFalsy();
     });
 
     it('should set error message on failure', () => {
       // Silence console.error for this test
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      const consoleErrorSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
       expect(service.error()).toBeNull();
 
       service.getProductById('1').subscribe(() => {

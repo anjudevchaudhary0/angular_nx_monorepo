@@ -1,9 +1,9 @@
-import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { ProductDetailComponent } from './product-detail.component';
 import { ProductsService } from '@org/shop/data';
-import { Product } from '@org/models';
+import { type Product } from '@org/models';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 
 describe('ProductDetailComponent', () => {
@@ -80,9 +80,11 @@ describe('ProductDetailComponent', () => {
   });
 
   it('should handle error when loading fails', () => {
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const consoleSpy = vi
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
     mockProductsService.getProductById.mockReturnValue(
-      throwError(() => new Error('Network error'))
+      throwError(() => new Error('Network error')),
     );
 
     component.ngOnInit();
@@ -101,8 +103,12 @@ describe('ProductDetailComponent', () => {
   });
 
   it('should handle add to cart action', () => {
-    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => undefined);
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
+    const alertSpy = vi
+      .spyOn(window, 'alert')
+      .mockImplementation(() => undefined);
+    const consoleSpy = vi
+      .spyOn(console, 'log')
+      .mockImplementation(() => undefined);
     component.product.set(mockProduct);
 
     component.addToCart();

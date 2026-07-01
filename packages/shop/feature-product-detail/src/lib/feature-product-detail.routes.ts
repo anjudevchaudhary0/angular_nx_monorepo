@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import { type Routes } from '@angular/router';
 import { ProductDetailComponent } from './product-detail/product-detail.component';
 
 export const featureProductDetailRoutes: Routes = [
