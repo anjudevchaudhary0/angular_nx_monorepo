@@ -6,10 +6,12 @@ import { Component } from '@angular/core';
   template: `<h1>Hello</h1>`,
 })
 export class DemoHusky {
-  protected title = 'Husky Demo';
-  protected count = 0;
+  title = 'Husky Demo';
+  count = 0;
 
   increment() {
+    const a = 1;
     this.count++;
+    console.log('Incremented count to:', a);
   }
 }
